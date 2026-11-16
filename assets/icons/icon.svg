@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="FakeCall">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b2430"/>
+      <stop offset="1" stop-color="#05070a"/>
+    </linearGradient>
+    <linearGradient id="disc" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4be37a"/>
+      <stop offset="1" stop-color="#1fae4b"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" fill="url(#bg)"/>
+  <circle cx="256" cy="256" r="150" fill="url(#disc)"/>
+  <g transform="translate(256 262) rotate(-135) scale(11.5) translate(-12 -13.2)">
+    <path fill="#fff" d="M3.5 14.5c0-1.2.5-2.3 1.4-3C7 9.9 9.4 9 12 9s5 .9 7.1 2.5c.9.7 1.4 1.8 1.4 3v1c0 .8-.7 1.5-1.5 1.5h-2.5c-.8 0-1.5-.7-1.5-1.5v-1.3c-1-.3-2-.45-3-.45s-2 .15-3 .45v1.3c0 .8-.7 1.5-1.5 1.5H5c-.8 0-1.5-.7-1.5-1.5z"/>
+  </g>
+</svg>

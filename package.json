@@ -1,0 +1,13 @@
+{
+  "name": "fakecall",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "assets": "node tools/generate-assets.mjs",
+    "build": "node tools/generate-assets.mjs && rm -rf dist && mkdir dist && cp -r index.html styles.css app.js sw.js manifest.webmanifest assets dist/"
+  },
+  "devDependencies": {
+    "ffmpeg-static": "^5.2.0",
+    "sharp": "^0.33.5"
+  }
+}

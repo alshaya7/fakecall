@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>FakeCall</title>
+
+  <!-- iOS standalone (Home Screen) chrome -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="FakeCall">
+  <meta name="theme-color" content="#000000">
+  <meta name="format-detection" content="telephone=no">
+
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png">
+  <link rel="icon" type="image/svg+xml" href="assets/icons/icon.svg">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- Icon sprite: original glyphs drawn for this app -->
+<svg class="sprite" aria-hidden="true" focusable="false">
+  <symbol id="i-phone" viewBox="0 0 24 24">
+    <path fill="currentColor" d="M3.5 14.5c0-1.2.5-2.3 1.4-3C7 9.9 9.4 9 12 9s5 .9 7.1 2.5c.9.7 1.4 1.8 1.4 3v1c0 .8-.7 1.5-1.5 1.5h-2.5c-.8 0-1.5-.7-1.5-1.5v-1.3c-1-.3-2-.45-3-.45s-2 .15-3 .45v1.3c0 .8-.7 1.5-1.5 1.5H5c-.8 0-1.5-.7-1.5-1.5z"/>
+  </symbol>
+  <symbol id="i-mute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="9" y="3" width="6" height="11" rx="3"/><path d="M6 11a6 6 0 0 0 12 0M12 17v4M4 4l16 16"/>
+  </symbol>
+  <symbol id="i-keypad" viewBox="0 0 24 24" fill="currentColor">
+    <circle cx="6" cy="6" r="1.7"/><circle cx="12" cy="6" r="1.7"/><circle cx="18" cy="6" r="1.7"/>
+    <circle cx="6" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="18" cy="12" r="1.7"/>
+    <circle cx="6" cy="18" r="1.7"/><circle cx="12" cy="18" r="1.7"/><circle cx="18" cy="18" r="1.7"/>
+  </symbol>
+  <symbol id="i-speaker" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path fill="currentColor" d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z"/><path d="M15.5 9.2a4 4 0 0 1 0 5.6M18 6.8a7.5 7.5 0 0 1 0 10.4"/>
+  </symbol>
+  <symbol id="i-add" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+    <path d="M12 5v14M5 12h14"/>
+  </symbol>
+  <symbol id="i-video" viewBox="0 0 24 24" fill="currentColor">
+    <rect x="2.5" y="7" width="13" height="10" rx="2.6"/><path d="M16.8 10.9 20.4 8.6c.5-.3 1.1 0 1.1.6v5.6c0 .6-.6.9-1.1.6l-3.6-2.3z"/>
+  </symbol>
+  <symbol id="i-contacts" viewBox="0 0 24 24" fill="currentColor">
+    <circle cx="12" cy="8.2" r="4"/><path d="M4 20c0-3.9 3.6-6 8-6s8 2.1 8 6c0 .6-.4 1-1 1H5c-.6 0-1-.4-1-1z"/>
+  </symbol>
+  <symbol id="i-remind" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="13" r="7"/><path d="M12 9.5V13l2.4 1.8M5.5 3.8 3.2 6M18.5 3.8 20.8 6"/>
+  </symbol>
+  <symbol id="i-message" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 4c-5 0-9 3.3-9 7.5 0 2.3 1.2 4.3 3.2 5.7l-.8 3.2 3.9-1.7c.9.2 1.8.3 2.7.3 5 0 9-3.3 9-7.5S17 4 12 4z"/>
+  </symbol>
+  <symbol id="i-settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+    <path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/>
+  </symbol>
+</svg>
+
+<main id="app">
+
+  <!-- 1. Home / setup -->
+  <section class="screen screen--home is-active" data-screen="home" aria-label="Home">
+    <header class="home__header">
+      <h1 class="home__title">FakeCall</h1>
+      <button type="button" class="icon-button" id="open-settings" aria-label="Caller settings">
+        <svg aria-hidden="true"><use href="#i-settings"/></svg>
+      </button>
+    </header>
+
+    <div class="home__notice" id="notice" role="status" hidden>
+      <p id="notice-text"></p>
+      <button type="button" class="link-button" id="notice-dismiss">OK</button>
+    </div>
+
+    <div class="home__caller">
+      <div class="avatar avatar--md" data-avatar aria-hidden="true"></div>
+      <div class="home__caller-text">
+        <span class="caller-name caller-name--sm" data-caller-name dir="rtl" lang="ar"></span>
+        <span class="home__caller-sub" data-caller-subtitle></span>
+      </div>
+    </div>
+
+    <div class="home__main">
+      <button type="button" class="call-me" id="call-me">
+        <svg aria-hidden="true"><use href="#i-phone"/></svg>
+        <span>Call me</span>
+      </button>
+
+      <fieldset class="segmented" id="delay-picker">
+        <legend>Ring after</legend>
+        <div class="segmented__track">
+          <label><input type="radio" name="delay" value="0"><span>Now</span></label>
+          <label><input type="radio" name="delay" value="10"><span>10s</span></label>
+          <label><input type="radio" name="delay" value="30"><span>30s</span></label>
+          <label><input type="radio" name="delay" value="60"><span>1 min</span></label>
+          <label><input type="radio" name="delay" value="300"><span>5 min</span></label>
+        </div>
+      </fieldset>
+
+      <p class="home__tip">With a delay, the screen goes black until it rings. Keep the app open, and double-tap the black screen to cancel.</p>
+      <p class="home__tip home__tip--warn" id="wake-notice" hidden>This browser can't keep the screen awake. Set Auto-Lock to "Never" or keep the screen on yourself while you wait.</p>
+    </div>
+
+    <aside class="install-hint" id="install-hint" hidden>
+      <p><strong>Install for full screen.</strong> Tap Share in Safari, then "Add to Home Screen".</p>
+      <button type="button" class="link-button" id="install-dismiss" aria-label="Dismiss install hint">Got it</button>
+    </aside>
+  </section>
+
+  <!-- 2. Armed: looks like an idle phone. Double-tap cancels. -->
+  <section class="screen screen--armed" data-screen="armed" aria-label="Waiting. Double-tap to cancel." inert></section>
+
+  <!-- 3. Incoming call -->
+  <section class="screen screen--call" data-screen="incoming" data-style="buttons" aria-label="Incoming call" inert>
+    <div class="call-bg" aria-hidden="true"><div class="call-bg__photo" data-photo-bg></div></div>
+
+    <div class="call-top">
+      <span class="call-sub" data-caller-subtitle></span>
+      <span class="caller-name" data-caller-name dir="rtl" lang="ar"></span>
+    </div>
+
+    <div class="avatar avatar--lg" data-avatar aria-hidden="true"></div>
+
+    <div class="call-bottom">
+      <div class="pills">
+        <button type="button" class="pill" aria-label="Remind me">
+          <svg aria-hidden="true"><use href="#i-remind"/></svg><span>Remind Me</span>
+        </button>
+        <button type="button" class="pill" aria-label="Reply with a message">
+          <svg aria-hidden="true"><use href="#i-message"/></svg><span>Message</span>
+        </button>
+      </div>
+
+      <!-- Unlocked style -->
+      <div class="answer-buttons">
+        <div class="round-action">
+          <button type="button" class="round round--red" id="decline" aria-label="Decline call">
+            <svg aria-hidden="true"><use href="#i-phone"/></svg>
+          </button>
+          <span aria-hidden="true">Decline</span>
+        </div>
+        <div class="round-action">
+          <button type="button" class="round round--green" id="accept" aria-label="Accept call">
+            <svg class="is-upright" aria-hidden="true"><use href="#i-phone"/></svg>
+          </button>
+          <span aria-hidden="true">Accept</span>
+        </div>
+      </div>
+
+      <!-- Locked style -->
+      <div class="slide" id="slide-track">
+        <span class="slide__label" id="slide-label" aria-hidden="true">slide to answer</span>
+        <button type="button" class="slide__knob" id="slide-knob" aria-label="Slide to answer">
+          <svg class="is-upright" aria-hidden="true"><use href="#i-phone"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. In call -->
+  <section class="screen screen--call" data-screen="incall" aria-label="Call in progress" inert>
+    <div class="call-bg" aria-hidden="true"><div class="call-bg__photo" data-photo-bg></div></div>
+
+    <div class="call-top">
+      <span class="caller-name caller-name--call" data-caller-name dir="rtl" lang="ar"></span>
+      <span class="call-timer" id="call-timer" role="timer" aria-label="Call duration">00:00</span>
+    </div>
+
+    <div class="call-bottom">
+      <div class="controls">
+        <div class="control"><button type="button" class="control__btn" data-toggle="mute" aria-pressed="false" aria-label="Mute"><svg aria-hidden="true"><use href="#i-mute"/></svg></button><span aria-hidden="true">Mute</span></div>
+        <div class="control"><button type="button" class="control__btn" aria-label="Keypad"><svg aria-hidden="true"><use href="#i-keypad"/></svg></button><span aria-hidden="true">Keypad</span></div>
+        <div class="control"><button type="button" class="control__btn" data-toggle="speaker" aria-pressed="false" aria-label="Speaker"><svg aria-hidden="true"><use href="#i-speaker"/></svg></button><span aria-hidden="true">Speaker</span></div>
+        <div class="control"><button type="button" class="control__btn" aria-label="Add call"><svg aria-hidden="true"><use href="#i-add"/></svg></button><span aria-hidden="true">Add Call</span></div>
+        <div class="control"><button type="button" class="control__btn" aria-label="FaceTime"><svg aria-hidden="true"><use href="#i-video"/></svg></button><span aria-hidden="true">FaceTime</span></div>
+        <div class="control"><button type="button" class="control__btn" aria-label="Contacts"><svg aria-hidden="true"><use href="#i-contacts"/></svg></button><span aria-hidden="true">Contacts</span></div>
+      </div>
+      <button type="button" class="round round--red round--end" id="end-call" aria-label="End call">
+        <svg aria-hidden="true"><use href="#i-phone"/></svg>
+      </button>
+    </div>
+  </section>
+</main>
+
+<!-- Caller settings sheet -->
+<div class="sheet-backdrop" id="sheet-backdrop" hidden></div>
+<section class="sheet" id="settings" role="dialog" aria-modal="true" aria-labelledby="settings-title" inert>
+  <header class="sheet__header">
+    <h2 id="settings-title">Caller settings</h2>
+    <button type="button" class="link-button" id="close-settings">Done</button>
+  </header>
+
+  <div class="sheet__body">
+    <div class="field">
+      <span class="field__label">Caller</span>
+      <span class="caller-name caller-name--sm field__name" data-caller-name dir="rtl" lang="ar"></span>
+    </div>
+
+    <label class="field">
+      <span class="field__label">Subtitle</span>
+      <input type="text" id="subtitle" maxlength="24" placeholder="mobile" autocomplete="off" autocapitalize="off" enterkeyhint="done">
+    </label>
+
+    <div class="field">
+      <span class="field__label">Photo</span>
+      <div class="field__row">
+        <div class="avatar avatar--sm" data-avatar aria-hidden="true"></div>
+        <label class="button">Choose photo<input type="file" id="photo-input" accept="image/*" class="visually-hidden"></label>
+        <button type="button" class="button button--quiet" id="photo-remove" hidden>Remove</button>
+      </div>
+    </div>
+
+    <fieldset class="field">
+      <legend class="field__label">Ringtone</legend>
+      <div class="options" id="ringtone-options"></div>
+    </fieldset>
+
+    <fieldset class="field">
+      <legend class="field__label">Call screen</legend>
+      <div class="options">
+        <label class="option"><input type="radio" name="style" value="buttons"><span>Accept and Decline buttons</span></label>
+        <label class="option"><input type="radio" name="style" value="slide"><span>Slide to answer</span></label>
+      </div>
+    </fieldset>
+
+    <div class="field">
+      <span class="field__label">Voice on answer</span>
+      <p class="field__status" id="voice-status" role="status">No voice clip</p>
+      <div class="field__row field__row--wrap">
+        <label class="button">Upload audio<input type="file" id="voice-input" accept="audio/*" class="visually-hidden"></label>
+        <button type="button" class="button" id="voice-record">Record</button>
+        <button type="button" class="button button--quiet" id="voice-play" hidden>Play</button>
+        <button type="button" class="button button--quiet" id="voice-remove" hidden>Remove</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Silent clip used only as a keep-awake fallback when the Wake Lock API fails -->
+<video id="keepawake" class="keepawake" playsinline loop title="FakeCall" aria-hidden="true" tabindex="-1"></video>
+
+<div class="rotate-note" aria-hidden="true">Rotate your phone upright</div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
